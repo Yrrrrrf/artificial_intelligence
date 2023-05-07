@@ -70,7 +70,7 @@ class TSP:  # Traveling Salesman Problem
             fitness: float = np.sum([self.get_distance_between_cities(cities[solution[i]], cities[solution[i + 1]]) for i in range(self.n_points - 1)])  # calculate fitness
             if fitness < best_fitness:
                 # print(f"\n{solution}")  # print the current solution
-                best_fitness, best_solution = fitness, solution  # update best fitness and best solution
+                best_fitness, best_solution = fitness, solution  # type: ignore
                 print(f" -> {best_fitness:4f}", end="")  # print best fitness
         print(f"\nBest fitness: {best_fitness}")  # print best fitness
         return best_solution  # return best solution (sequence of cities in the best order)
@@ -88,6 +88,7 @@ class TSP:  # Traveling Salesman Problem
             - `best_solution`: np.ndarray = Array of cities in the best order
         """
         best_solution: np.ndarray = np.arange(self.n_points)
+        return best_solution
 
 
     def nearest_neighbor(self, points: list[tuple[int, int]]) -> np.ndarray:
