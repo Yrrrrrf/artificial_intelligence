@@ -32,9 +32,16 @@ class TSP:  # Traveling Salesman Problem
 
     def run(self) -> None:
         """
-        Pop up the window and run the app while the user doesn't close the window
+        Initialize random points and draw them on the screen
         """
         self.points = [(random.randint(0, Config.WIDTH.value), random.randint(0, Config.HEIGHT.value)) for _ in range(self.n_points)]
+        self.draw_points()  # draw points
+
+
+    def draw_points(self) -> None:
+        """
+        Draw the points and the lines between them
+        """
         [pygame.draw.circle(self.screen, (0, 255, 0), point, 5) for point in self.points]  # draw points
         pygame.display.update()  # update screen
 
@@ -83,89 +90,68 @@ class TSP:  # Traveling Salesman Problem
         best_solution: np.ndarray = np.arange(self.n_points)
 
 
-    # def heapPermutation(a, size):
-    
-    #     # if size becomes 1 then prints the obtained
-    #     # permutation
-    #     if size == 1:
-    #         print(a)
-    #         return
-    
-    #         for i in range(size):
-    #         heapPermutation(a, size-1)
-    
-    #         # if size is odd, swap 0th i.e (first)
-    #         # and (size-1)th i.e (last) element
-    #         # else If size is even, swap ith
-    #         # and (size-1)th i.e (last) element
-    #         if size & 1:
-    #             a[0], a[size-1] = a[size-1], a[0]
-    #         else:
-    #             a[i], a[size-1] = a[size-1], a[i]
-
-    # # Driver code
-    # a = [1, 2, 3]
-    # n = len(a)
-    # heapPermutation(a, n)
-
-
-
-    
-
-
-
-
-    # todo: implement nearest neighbor algorithm
-    def nearest_neighbor(self, cities: np.ndarray) -> np.ndarray:
+    def nearest_neighbor(self, points: list[tuple[int, int]]) -> np.ndarray:
         """
         Nearest neighbor algorithm.
-        This algorithm iterates over all possible solutions and returns the best one.
-        
+        This algorithm selects a node and then selects the node closest to the current node until all nodes have been visited.
+
         ### Parameters:
-            - `cities`: np.ndarray = Array of cities
+            - `points`: list[tuple[int, int]] = List of points
 
         ### Returns:
-            - `best_solution`: np.ndarray = Array of cities in the best order
+            - `nearest_route`: np.ndarray = Array of cities in the best order
+        
         """
-        best_solution: np.ndarray = np.arange(self.n_points)  # initialize best solution (any solution)
-        best_fitness: float = np.sum([self.get_distance_between_cities(cities[best_solution[i]], cities[best_solution[i + 1]]) for i in range(self.n_points - 1)])  # initialize best fitness (any fitness)
-        print(f"{best_fitness}", end="")  # print best fitness
+        visited = np.zeros(len(points), dtype=bool)  # Create a boolean array to keep track of visited points
 
-        nearest_sequence: np.ndarray = np.array([best_solution[0]])  # select random city (first element of the best solution)
-        pygame.draw.circle(self.screen, (0, 0, 255), self.points[nearest_sequence[0]], 5)  # repaint the first point in blue
-        pygame.display.update()  # update screen
+        route = np.zeros(len(points), dtype=int)  # Create an array to store the indices of the visited points in the order of the route
 
-        for i in range(self.n_points):  # iterate over all possible solutions
-            # get the nearest city of the last city in the sequence
-            nearest_city: np.ndarray
-            # get the distance from the last city in the sequence to all the other cities
-            distances: np.ndarray = np.array([self.get_distance_between_cities(cities[nearest_sequence[-1]], cities[j]) for j in range(self.n_points)])
-            # get the nearest city
-            nearest_city = np.argmin(distances)
-            # get the fitness of the new solution
-            print(nearest_city)
-            nearest_sequence = np.append(nearest_sequence, nearest_city)  # add nearest city to the sequence
-        print(f"\nTotal fitness: {best_fitness}")  # print best fitness
-        print(best_solution)
-        return best_solution  # return best solution
+        # Function to calculate the Euclidean distance between two points
+        def calculate_distance(point1, point2):
+            x1, y1 = point1
+            x2, y2 = point2
+            return np.hypot(x1 - x2, y1 - y2)
+
+        # Set the starting point as the first point in the list
+        current_point = points[0]  # Set the current point to the starting point
+        route[0] = 0  # Set the first point in the route to the starting point
+        visited[0] = True  # Set the starting point as visited
+
+        for i in range(1, len(points)):  # Iterate over the remaining points
+            # Initialize the minimum distance and nearest neighbor
+            min_distance = np.inf  # Set the minimum distance to infinity
+            nearest_neighbor_index = -1  # Set the nearest neighbor to -1
+            for j in range(len(points)):  # Find the nearest neighbor
+                if not visited[j]:  # If the point has not been visited
+                    distance = calculate_distance(current_point, points[j])  # Calculate the distance between the current point and the point being checked
+                    if distance < min_distance:  # If the distance is less than the minimum distance
+                        min_distance, nearest_neighbor_index = distance, j  # Update the minimum distance and nearest neighbor
+
+            # Update the current point, route, and visited array
+            current_point = points[nearest_neighbor_index]  # Update the current point
+            route[i] = nearest_neighbor_index  # Update the route
+            visited[nearest_neighbor_index] = True  # Update the visited array
+
+        print(route)
+        print(np.sum([self.get_distance_between_cities(points[route[i]], points[route[i + 1]]) for i in range(self.n_points - 1)]))
+        return route
 
 
 
-    def draw_solution(self, best_solution: np.ndarray) -> None:
+    def draw_solution(self, solution: np.ndarray) -> None:
         """
         Draw the best solution.
     
         ### Parameters:
-            - `best_solution`: np.ndarray = Array of cities in the best order
+            - `solution`: np.ndarray = Array of cities in the best order
         """
         for i in range(self.n_points - 1):
-            pygame.draw.line(self.screen, (0, 127, 0), self.points[best_solution[i]], self.points[best_solution[i + 1]], 1)
-        pygame.draw.line(self.screen, (0, 127, 0), self.points[best_solution[-1]], self.points[best_solution[0]], 1)  # draw line between last and first point
-        # draw total distance on screen
-        font = pygame.font.SysFont("Arial", 20)
-        text = font.render(f"Total distance: {np.sum([self.get_distance_between_cities(self.points[best_solution[i]], self.points[best_solution[i + 1]]) for i in range(self.n_points - 1)])}", True, (0, 127, 0))
-        self.screen.blit(text, (10, 10))
+            pygame.draw.line(self.screen, (0, 127, 0), self.points[solution[i]], self.points[solution[i + 1]], 1)
+        pygame.draw.line(self.screen, (0, 127, 0), self.points[solution[-1]], self.points[solution[0]], 1)  # draw line between last and first point
+
+        font = pygame.font.SysFont("Arial", 16)
+        text = font.render(f"Total distance: {np.sum([self.get_distance_between_cities(self.points[solution[i]], self.points[solution[i + 1]]) for i in range(self.n_points - 1)])}", True, (0, 127, 0))
+        self.screen.blit(text, (8, 8))
 
         pygame.display.update()  # update screen
                       
-
