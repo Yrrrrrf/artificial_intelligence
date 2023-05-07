@@ -46,32 +46,28 @@ class App:
         pygame.display.set_icon(pygame.image.load("resources/img/puzzle.png"))
         self.clock = pygame.time.Clock()  # Initialize the clock
 
-        # ? Test code --------------------------------------------------------------------------------
-
         selected_algorithm = "TSP"  # Traveling Salesman Problem
         tsp: TSP = TSP(self.screen)
         pygame.display.update()  # update screen
 
-        if self.play:  # if the game is running
-            self.screen.fill(Theme.BACKGROUND.value)  # fill the screen with the background color
-            text = Theme.TITLE_FONT.value.render("Traveling Salesman Problem", True, Theme.TITLE.value)  # render the text
-            self.screen.blit(text, (Config.WIDTH.value // 2 - text.get_width() // 2, 10))  # center the text
-
-            match (selected_algorithm):  # switch statement                    
-                case "TSP":
-                    tsp.run()
-                    tsp.draw_solution(tsp.exhaustive_search(tsp.points))
-                    # tsp.draw_solution(tsp.nearest_neighbor(tsp.points))
-                    # wait 0.5 seconds
-                    time.sleep(0.5)
-                case _:  # Any other case
-                    print(f"\033[91m{selected_algorithm} is not implemented\033[0m")
-
-
-        # ? End of test code -------------------------------------------------------------------------
-
         while self.running:  # while the app is running
             self.clock.tick(60)  # set the fps to 60
+            # self.clock.tick(0)  # set the fps to 60
             for event in pygame.event.get():  # get all events (user input)
                 if event.type == pygame.QUIT:  # if the user clicks the close button
                     self.running = False  # stop the app
+
+            if self.play:  # if the game is running
+                self.screen.fill(Theme.BACKGROUND.value)  # fill the screen with the background color
+                text = Theme.TITLE_FONT.value.render("Traveling Salesman Problem", True, Theme.TITLE.value)  # render the text
+                self.screen.blit(text, (Config.WIDTH.value // 2 - text.get_width() // 2, 10))  # center the text
+
+                match (selected_algorithm):  # switch statement                    
+                    case "TSP":
+                        tsp.run()
+                        tsp.draw_solution(tsp.exhaustive_search(tsp.points))
+                        # tsp.draw_solution(tsp.nearest_neighbor(tsp.points))
+                        # wait 0.5 seconds
+                        time.sleep(0.5)
+                    case _:  # Any other case
+                        print(f"\033[91m{selected_algorithm} is not implemented\033[0m")

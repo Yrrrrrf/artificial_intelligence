@@ -1,6 +1,5 @@
 """
 Main module for evolutive algorithms
-This module contains the script that launch the GUI that shows the n-puzzle game. (TODO)
 
 Author: Yrrrrrf
 Date: Monday 13th, March 2023
