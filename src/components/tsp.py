@@ -101,7 +101,6 @@ class TSP:  # Traveling Salesman Problem
 
         ### Returns:
             - `nearest_route`: np.ndarray = Array of cities in the best order
-        
         """
         visited = np.zeros(len(points), dtype=bool)  # Create a boolean array to keep track of visited points
 
