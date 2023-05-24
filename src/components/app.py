@@ -57,13 +57,16 @@ class App:
             text = Theme.TITLE_FONT.value.render("Traveling Salesman Problem", True, Theme.TITLE.value)  # render the text
             self.screen.blit(text, (Config.WIDTH.value // 2 - text.get_width() // 2, 10))  # center the text
 
-            match (selected_algorithm):  # switch statement                    
-                case "TSP":
-                    tsp.run()
+            
+            tsp.run()
+
+            # match selected_algorithm:  # switch statement                    
+            #     case "TSP":
+                    # tsp.run()
                     # tsp.draw_solution(tsp.exhaustive_search(tsp.points))
-                    tsp.draw_solution(tsp.nearest_neighbor(tsp.points))
-                case _:  # Any other case
-                    print(f"\033[91m{selected_algorithm} is not implemented\033[0m")
+                #     tsp.draw_solution(tsp.nearest_neighbor(tsp.points))
+                # case _:  # Any other case
+                #     print(f"\033[91m{selected_algorithm} is not implemented\033[0m")
 
 
         # ? End of test code -------------------------------------------------------------------------

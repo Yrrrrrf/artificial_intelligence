@@ -91,7 +91,7 @@ class TSP:  # Traveling Salesman Problem
         return best_solution
 
 
-    def nearest_neighbor(self, points: list[tuple[int, int]]) -> np.ndarray:
+    def nearest_neighbor(self, points) -> np.ndarray:
         """
         Nearest neighbor algorithm.
         This algorithm selects a node and then selects the node closest to the current node until all nodes have been visited.
