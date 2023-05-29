@@ -60,14 +60,6 @@ class App:
             
             tsp.run()
 
-            # match selected_algorithm:  # switch statement                    
-            #     case "TSP":
-                    # tsp.run()
-                    # tsp.draw_solution(tsp.exhaustive_search(tsp.points))
-                #     tsp.draw_solution(tsp.nearest_neighbor(tsp.points))
-                # case _:  # Any other case
-                #     print(f"\033[91m{selected_algorithm} is not implemented\033[0m")
-
 
         # ? End of test code -------------------------------------------------------------------------
 

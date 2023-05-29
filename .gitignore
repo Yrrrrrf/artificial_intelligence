@@ -127,4 +127,8 @@ dmypy.json
 .idea
 .vscode
 
+
+# Own stuff
+projects/*
+
 poem.md
